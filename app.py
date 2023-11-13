@@ -206,17 +206,17 @@ def riskMit():
             firstRow = [int(num) for num in dataRow[0].split()]
             numStrats = firstRow[0]
             costs = [int(num) for num in dataRow[1].split()]
-            dp = [[[-1]*len(costs) for i in range(numStrats+1)] for i in range(2)]
-            def helper(numStrats, holding, ind):
-                if (numStrats == 0 and not holding) or ind == len(costs):
-                    return 0
-                if (dp[holding][numStrats][ind] != -1):
-                    return dp[holding][numStrats][ind]
-                if (not holding): 
-                    dp[holding][numStrats][ind] = max(helper(numStrats, 1, ind+1)-costs[ind],helper(numStrats, 0, ind+1)) 
-                else: 
-                    dp[holding][numStrats][ind] = max(helper(numStrats-1, 0, ind+1)+costs[ind], helper(numStrats, 1, ind+1))
-                return dp[holding][numStrats][ind]
-            finans.append(helper(numStrats, 0, 0))
+            dp = [[0]*len(costs) for i in range(numStrats+1)]     
+            #dp tabu, memo is tle: 
+            # dp[i][j] is max risk miti with i strats used and up to index j in costs     
+            # fill in grid with dp[i][j] = max(no strat [i][j-1], yes strat max of cost[j]-cost[t] + dp[i-1][j-1] t=0:j-1)
+            # keep track of yes strat (max (cost[j]-cost[t]+dp[i-1][t-1]) with cost [j]
+            for i in range(1, numStrats+1):
+                maxSum = -costs[0] #first buy
+                for j in range(1, len(costs)):
+                    dp[i][j] = max(maxSum+costs[j], dp[i][j-1])
+                    maxSum = max(maxSum, dp[i-1][j-1]-costs[j])
+            finans.append(dp[numStrats][len(costs)-1])
+                    
         return { 'answer': finans }
             
