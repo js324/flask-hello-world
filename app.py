@@ -104,3 +104,30 @@ def dataE():
             
             finans.append(ansString[:-1])
         return { 'answer': finans } 
+
+@app.route('/coin-change', methods = ['POST'])
+def coinChange():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            firstRow = dataRow[0].split()
+            coins = [int(coin) for coin in dataRow[1].split()]
+            target = int(firstRow[0]) 
+
+            def helper(target, coins, currSum, ind):
+                ans = 0
+                if target == currSum:
+                    return 1
+                if currSum > target:
+                    return 0
+                while (ind < len(coins)):
+                    ans += helper(target, coins, currSum + coins[ind], ind)
+                    ind += 1
+                return ans
+            
+            ans = helper(target, coins, 0, 0)
+            finans.append(ans)
+        return { 'answer': finans } 
+
+                
