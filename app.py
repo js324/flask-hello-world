@@ -111,22 +111,29 @@ def coinChange():
     if request.method == 'POST':
         data = request.json['inputs']
         for dataRow in data:
+            
             firstRow = dataRow[0].split()
             coins = [int(coin) for coin in dataRow[1].split()]
             target = int(firstRow[0]) 
+            dp = [-1 for i in range(target+1)]
 
-            def helper(target, coins, currSum, ind):
+            def helper(target, coins, currSum, ind, dp):
                 ans = 0
                 if target == currSum:
                     return 1
                 if currSum > target:
                     return 0
+                if (dp[currSum] != -1):
+                    return dp[currSum]
+                dp[currSum] = 0
                 while (ind < len(coins)):
                     ans += helper(target, coins, currSum + coins[ind], ind)
+                    dp[currSum] += ans
                     ind += 1
-                return ans
+                    
+                return dp[currSum]
             
-            ans = helper(target, coins, 0, 0)
+            ans = helper(target, coins, 0, 0, dp)
             finans.append(ans)
         return { 'answer': finans } 
 
