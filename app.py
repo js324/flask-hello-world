@@ -65,7 +65,10 @@ def fileReorg():
             for num in occs:
                 if (occs[num]%2 == 0):
                     total += occs[num]
-            total += largestOdd
+                else:
+                    total += occs[num]-1
+            if (largestOdd > 0):
+                total += 1
             finans.append(total)
         return { 'answer': finans } 
 
