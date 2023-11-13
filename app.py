@@ -130,12 +130,40 @@ def timeInt():
         for dataRow in data:
             numEmp = int(dataRow[0])
             empNames = dataRow[1].split()
-            heap = []
+            # heap = []
+            hoursSched = [[] for i in range(22)]
             for i in range(2, len(dataRow)):
-                intervalTime = dataRow[i].split()
-                heapq.heappush(heap, ([intervalTime[0], dataRow[i][1]], empNames[i-2]))
-            print(heap)
+                intervalTime = [int(e) for e in dataRow[i].split()]
+                hoursSched[intervalTime[0]].append(empNames[i-2])
+                hoursSched[intervalTime[1]].append(empNames[i-2])
+                # intervalTime = [int(e) for e in dataRow[i].split()]
+                # heap.append((([intervalTime[0], intervalTime[1]]), empNames[i-2]))
+            seenEmp = set()
+            currStaffEmp = []
+            startTimeMap = dict()
+            beginShift = 0
+            ans = []
+            for hour in range(1,22):
+                if (beginShift > 0 and hoursSched[hour]):
+                    print(beginShift, hour, currStaffEmp)
+                    ans.append([beginShift, hour, currStaffEmp.copy()])
+                    
+                # tmp = beginShift
+                for i, name in enumerate(hoursSched[hour]):
+                    beginShift = hour
+                    # print(currStaffEmp)
+                    if name in seenEmp:
+                        currStaffEmp.remove(name)
+                    else:
+                        currStaffEmp.append(name)
+                        seenEmp.add(name)
+                        startTimeMap[name] = hour
+            ansString = [str(len(ans))]
+            for row in ans:
+                ansString.append(str(row[0]) + " " + str(row[1]) + " " + str(len(row[2])) + " " + " ".join([str(e) for e in row[2]]))
+            finans.append(ansString)
 
+    return {'answer': finans}
 
 
 @app.route('/coin-change', methods = ['POST'])
