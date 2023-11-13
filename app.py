@@ -26,7 +26,7 @@ def portfolioOperations():
             cnt1 = 0
             cnt2 = 0
             total = 0
-            dp = [[0]*secondLen+1 for i in range(firstLen+1)]
+            dp = [[0]*(secondLen+1) for i in range(firstLen+1)]
             def helper(cnt1, cnt2, total):
                 totalNum = 0
                 if cnt1 <= len(firstStack) and cnt2 <= len(secondStack):
