@@ -24,30 +24,40 @@ def portfolioOperations():
             cnt1 = 0
             cnt2 = 0
             total = 0
-            totalCount = 0
-            while (cnt1 < len(firstStack) and cnt2 < len(secondStack)):
-                if (firstStack[cnt1] < secondStack[cnt2]):
-                    if (firstStack[cnt1]+total <= maxLimit):
-                        total += firstStack[cnt1]
-                        cnt1 += 1
-                        totalCount += 1
-                    else:
-                        break
-                else: 
-                    if (secondStack[cnt2]+total <= maxLimit):
-                        total += secondStack[cnt2]
-                        cnt2 += 1
-                        totalCount += 1
-                    else:
-                        break
-            while (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
-                total += secondStack[cnt2]
-                cnt2 += 1
-                totalCount += 1
-            while (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
-                total += firstStack[cnt1]
-                cnt1 += 1
-                totalCount += 1
+            
+            def helper(cnt1, cnt2, total):
+                totalNum = 0
+                if cnt1 < len(firstStack) or cnt2 < len(secondStack):
+                    if (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
+                        totalNum = max(totalNum, 1 + helper(cnt1+1, cnt2, firstStack[cnt1]+total))
+                    if (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
+                        totalNum = max(totalNum, 1 + helper(cnt1, cnt2+1, secondStack[cnt2]+total))
+                
+                return totalNum
+            totalCount = helper(0,0, 0)
+            # while (cnt1 < len(firstStack) and cnt2 < len(secondStack)):
+            #     if (firstStack[cnt1] < secondStack[cnt2]):
+            #         if (firstStack[cnt1]+total <= maxLimit):
+            #             total += firstStack[cnt1]
+            #             cnt1 += 1
+            #             totalCount += 1
+            #         else:
+            #             break
+            #     else: 
+            #         if (secondStack[cnt2]+total <= maxLimit):
+            #             total += secondStack[cnt2]
+            #             cnt2 += 1
+            #             totalCount += 1
+            #         else:
+            #             break
+            # while (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
+            #     total += secondStack[cnt2]
+            #     cnt2 += 1
+            #     totalCount += 1
+            # while (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
+            #     total += firstStack[cnt1]
+            #     cnt1 += 1
+            #     totalCount += 1
             finans.append(totalCount)
     return { 'answer': finans }
 
@@ -127,10 +137,9 @@ def coinChange():
                     return dp[currSum]
                 dp[currSum] = 0
                 while (ind < len(coins)):
-                    ans += helper(target, coins, currSum + coins[ind], ind)
-                    dp[currSum] += ans
+                    ans += helper(target, coins, currSum + coins[ind], ind, dp)
                     ind += 1
-                    
+                dp[currSum] = ans
                 return dp[currSum]
             
             ans = helper(target, coins, 0, 0, dp)
