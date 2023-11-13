@@ -127,7 +127,6 @@ def timeInt():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
-        print(data)
         for dataRow in data:
             numEmp = int(dataRow[0])
             empNames = dataRow[1].split()
@@ -145,7 +144,7 @@ def timeInt():
             beginShift = 0
             ans = []
             for hour in range(1,22):
-                if (beginShift > 0 and hoursSched[hour] and currStaffEmp):
+                if (beginShift > 0 and hoursSched[hour]):
                     print(beginShift, hour, currStaffEmp)
                     ans.append([beginShift, hour, currStaffEmp.copy()])
                     
@@ -161,6 +160,7 @@ def timeInt():
                         startTimeMap[name] = hour
             ansString = [str(len(ans))]
             for row in ans:
+                row[2] = sorted(row[2])
                 ansString.append(str(row[0]) + " " + str(row[1]) + " " + str(len(row[2])) + " " + " ".join([str(e) for e in row[2]]))
             finans.append(ansString)
 
