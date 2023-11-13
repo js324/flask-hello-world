@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from collections import Counter
 app = Flask(__name__)
 
 @app.route('/')
@@ -8,12 +9,11 @@ def hello_world():
 
 
 @app.route('/portfolio-operations', methods = ['POST'])
-def user():
+def portfolioOperations():
     finans = []
     if request.method == 'POST':
         
         data = request.json['inputs']
-        print(data)
         for dataRow in data:
             firstRow = dataRow[0].split()
             maxLimit = int(firstRow[2])
@@ -48,3 +48,25 @@ def user():
                 totalCount += 1
             finans.append(totalCount)
     return { 'answer': finans }
+
+@app.route('/file-reorganization', methods = ['POST'])
+def fileReorg():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for word in data:
+            occs = Counter(word)
+            print(occs)
+            largestOdd = 0
+            total = 0
+            for num in occs:
+                if (occs[num]%2 == 1):
+                    largestOdd = max(occs[num], largestOdd)
+            for num in occs:
+                if (occs[num]%2 == 0):
+                    total += occs[num]
+            total += largestOdd
+            finans.append(total)
+        return { 'answer': finans } 
+
+                
