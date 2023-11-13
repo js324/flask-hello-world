@@ -26,15 +26,18 @@ def portfolioOperations():
             cnt1 = 0
             cnt2 = 0
             total = 0
-            dp = [[0]*secondLen for i in range(firstLen)]
+            dp = [[0]*secondLen+1 for i in range(firstLen+1)]
             def helper(cnt1, cnt2, total):
                 totalNum = 0
+                if cnt1 <= len(firstStack) and cnt2 <= len(secondStack):
+                    if (dp[cnt1][cnt2] != 0):
+                        return dp[cnt1][cnt2]
                 
                 if (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
                     totalNum = max(totalNum, 1 + helper(cnt1+1, cnt2, firstStack[cnt1]+total))
                 if (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
                     totalNum = max(totalNum, 1 + helper(cnt1, cnt2+1, secondStack[cnt2]+total))
-                if cnt1 < len(firstStack) and cnt2 < len(secondStack):
+                if cnt1 <= len(firstStack) and cnt2 <= len(secondStack):
                     dp[cnt1][cnt2] = totalNum
                 return totalNum
             totalCount = helper(0,0, 0)
