@@ -19,20 +19,23 @@ def portfolioOperations():
         for dataRow in data:
             firstRow = dataRow[0].split()
             maxLimit = int(firstRow[2])
+            firstLen = int(firstRow[0])
+            secondLen = int(firstRow[1])
             firstStack = [int(ele) for ele in dataRow[1].split()]
             secondStack = [int(ele) for ele in dataRow[2].split()]
             cnt1 = 0
             cnt2 = 0
             total = 0
-            
+            dp = [[0]*secondLen for i in range(firstLen)]
             def helper(cnt1, cnt2, total):
                 totalNum = 0
-                if cnt1 < len(firstStack) or cnt2 < len(secondStack):
-                    if (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
-                        totalNum = max(totalNum, 1 + helper(cnt1+1, cnt2, firstStack[cnt1]+total))
-                    if (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
-                        totalNum = max(totalNum, 1 + helper(cnt1, cnt2+1, secondStack[cnt2]+total))
                 
+                if (cnt1 < len(firstStack) and firstStack[cnt1]+total <= maxLimit):
+                    totalNum = max(totalNum, 1 + helper(cnt1+1, cnt2, firstStack[cnt1]+total))
+                if (cnt2 < len(secondStack) and secondStack[cnt2]+total <= maxLimit):
+                    totalNum = max(totalNum, 1 + helper(cnt1, cnt2+1, secondStack[cnt2]+total))
+                if cnt1 < len(firstStack) and cnt2 < len(secondStack):
+                    dp[cnt1][cnt2] = totalNum
                 return totalNum
             totalCount = helper(0,0, 0)
             # while (cnt1 < len(firstStack) and cnt2 < len(secondStack)):
