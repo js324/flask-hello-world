@@ -197,5 +197,27 @@ def coinChange():
             finans.append(ans)
         return { 'answer': finans } 
 
-# @app.route('/risk-mitigation', methods = ['POST'])
-# def riskMit():
+@app.route('/risk-mitigation', methods = ['POST'])
+def riskMit():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            firstRow = [int(num) for num in dataRow[0].split()]
+            numStrats = firstRow[0]
+            costs = [int(num) for num in dataRow[1].split()]
+            print(costs)
+            dp = [[[-1]*len(costs) for i in range(numStrats+1)] for i in range(2)]
+            def helper(numStrats, holding, ind):
+                if (numStrats == 0 and not holding) or ind == len(costs):
+                    return 0
+                if (dp[holding][numStrats][ind] != -1):
+                    return dp[holding][numStrats][ind]
+                if (not holding): 
+                    dp[holding][numStrats][ind] = max(helper(numStrats-1, 1, ind+1)-costs[ind],helper(numStrats, 0, ind+1)) 
+                else: 
+                    dp[holding][numStrats][ind] = max(helper(numStrats, 0, ind+1)+costs[ind], helper(numStrats, 1, ind+1))
+                return dp[holding][numStrats][ind]
+            finans.append(helper(numStrats, 0, 0))
+        return { 'answer': finans }
+            
