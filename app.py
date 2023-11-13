@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import request
 from collections import Counter
+import math
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -72,4 +74,33 @@ def fileReorg():
             finans.append(total)
         return { 'answer': finans } 
 
-                
+@app.route('/data-encryption', methods = ['POST'])
+def dataE():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for word in data:
+            word = word.replace(" ", "")
+            lowerBound = math.floor(math.sqrt(len(word)))
+            upperBound = math.ceil(math.sqrt(len(word)))
+            rowsLen = lowerBound
+            colsLen = lowerBound
+            while (rowsLen*colsLen < len(word)):
+                if colsLen < upperBound: 
+                    colsLen += 1
+                else:
+                    rowsLen += 1
+            cnt1 = 0
+            cnt2 = 0
+            ansString = ""
+            while (cnt2 < colsLen):
+                ansString += word[cnt1]
+                if (cnt1+colsLen < len(word)):
+                    cnt1 += colsLen
+                else: 
+                    ansString += " "
+                    cnt2 += 1
+                    cnt1 = cnt2 
+            
+            finans.append(ansString[:-1])
+        return { 'answer': finans } 
