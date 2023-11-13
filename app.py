@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from collections import Counter
 import math
+import heapq
 
 app = Flask(__name__)
 
@@ -121,6 +122,22 @@ def dataE():
             finans.append(ansString[:-1])
         return { 'answer': finans } 
 
+@app.route('/time-intervals', methods = ['POST'])
+def timeInt():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            numEmp = int(dataRow[0])
+            empNames = dataRow[1].split()
+            heap = []
+            for i in range(2, len(dataRow)):
+                intervalTime = dataRow[i].split()
+                heapq.heappush(heap, ([intervalTime[0], dataRow[i][1]], empNames[i-2]))
+            print(heap)
+
+
+
 @app.route('/coin-change', methods = ['POST'])
 def coinChange():
     finans = []
@@ -131,24 +148,23 @@ def coinChange():
             firstRow = dataRow[0].split()
             coins = [int(coin) for coin in dataRow[1].split()]
             target = int(firstRow[0]) 
-            dp = [-1 for i in range(target+1)]
+            dp = [[-1]*(target+1) for i in range(len(coins))]
 
-            def helper(target, coins, currSum, ind, dp):
+            def helper(target, coins, ind):
                 ans = 0
-                if target == currSum:
+                if target == 0:
                     return 1
-                if currSum > target:
+                if target < 0 or ind >= len(coins):
                     return 0
-                if (dp[currSum] != -1):
-                    return dp[currSum]
-                dp[currSum] = 0
-                while (ind < len(coins)):
-                    ans += helper(target, coins, currSum + coins[ind], ind, dp)
-                    ind += 1
-                dp[currSum] = ans
-                return dp[currSum]
+                if (dp[ind][target] != -1):
+                    return dp[ind][target]
+                if (coins[ind] > target):
+                    dp[ind][target] = helper(target, coins, ind+1)
+                else: 
+                    dp[ind][target] = helper(target - coins[ind], coins, ind) + helper(target, coins, ind+1)
+                return dp[ind][target]
             
-            ans = helper(target, coins, 0, 0, dp)
+            ans = helper(target, coins, 0)
             finans.append(ans)
         return { 'answer': finans } 
 
