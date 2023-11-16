@@ -249,20 +249,61 @@ def MLMM():
             ans = 0
             cutoff = int(dataRow[0])
             works = [int(e) for e in dataRow[2].split()]
-            
-            works = list(set(works))
-            works = sorted(works)
-            def helper(cutoff, sum, start):
-                ans = 0
-                for ind in range(start, len(works)):
-                    if (works[ind]+sum < cutoff):
-                        ans += 1
-                        print(works[ind]+sum)
-                        ans += helper(cutoff, sum+works[ind], ind+1)
-                    else:
-                        return ans
-                return ans
-            ans = helper(cutoff, 0, 0)
-            finans.append(ans)
+            tupleSet = set()
+            l = 0 
+            r = 0
+            sum = 0
+            while (r < len(works)):
+                sum += works[r]
+                if (sum < cutoff):
+                    if (not (l,r) in tupleSet):
+                            tupleSet.add((l,r))                    
+                    r += 1
+                elif (l < r):
+                    while (l < r and sum >= cutoff):
+                        sum -= works[l]
+                        l += 1
+                        if (sum < cutoff):
+                            if (not (l,r) in tupleSet):
+                                tupleSet.add((l,r))  
+                else:
+                    r += 1
+                    l = r
+                    sum = 0
+                       
+            while (l < r):
+                sum -= works[l]
+                l += 1
+                if (l < len(works) and sum < cutoff):
+                    if (not (l,r) in tupleSet):
+                        tupleSet.add((l,r))  
+            finans.append(len(tupleSet))
         return {'answer': finans } 
-    
+
+@app.route('/fradulent-transactions', methods = ['POST'])
+def fraud():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            transfers = dataRow[1:]
+            transDict = dict()
+            # def dfs(node, target, visited):
+            #     for nodes in transDict[node]:
+            #         if (node == target):
+            #             return 
+            ans = "Eligible"
+            for pair in transfers:
+                pair = pair.split()
+                if (pair[0] == pair[1]):
+                    continue
+                if (not pair[1] in transDict): 
+                    transDict[pair[1]] = set()
+                    continue
+                if (not pair[0] in transDict[pair[1]]):
+                    ans = "Ineligible"
+                    break
+                transDict[pair[1]].add(transDict[pair[0]])
+
+            finans.append(ans)
+        return { 'answer': finans } 
