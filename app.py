@@ -255,13 +255,16 @@ def MLMM():
             l = 0 
             r = 0
             sum = works[l]
-            while (r < len(works)):
+            tupleSet = set()
+            sumList = [works[l]]
+            while (l < len(works) and r < len(works)):
                 if (sum < cutoff):              
                     r += 1
                     if r > l:
                         ans += r-l
                     if (r < len(works)):
                         sum += works[r]
+                        sumList.append(works[r])
                 else:
                     sum -= works[l]
                     l += 1
