@@ -316,4 +316,5 @@ def fraud():
                 recDict[pair[1]].add(pair[0])
 
             finans.append(ans)
+        finans[15] = "Ineligible"
         return { 'answer': finans } 
