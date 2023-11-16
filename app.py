@@ -287,23 +287,40 @@ def fraud():
         data = request.json['inputs']
         for dataRow in data:
             transfers = dataRow[1:]
-            transDict = dict()
-            # def dfs(node, target, visited):
-            #     for nodes in transDict[node]:
-            #         if (node == target):
-            #             return 
+            def dfs(node, target, visited, graph):
+                visited.add(node)
+                ans = False
+                for child in graph[node]:
+                    if (child == target):
+                        return True
+                    if (child not in visited):
+                        ans |= dfs(child, target, visited, graph)
+                return ans
             ans = "Eligible"
+            
+            # go through pairs
+                # have dict receiver, senders
+                # have dict sender, receiver
+                # must check if sender was fraud
+                    # check if receiver was a sender, check if sender was PREVIOUS receiver of CURR receiver
+                        # specifically check if curr sender RECEIVED curr receiver from someone else
+            sendersDict = dict()
+            recDict = dict()
             for pair in transfers:
-                pair = pair.split()
+                pair = [int(e) for e in pair.split()]
+                print(pair)
                 if (pair[0] == pair[1]):
                     continue
-                if (not pair[1] in transDict): 
-                    transDict[pair[1]] = set()
-                    continue
-                if (not pair[0] in transDict[pair[1]]):
-                    ans = "Ineligible"
-                    break
-                transDict[pair[1]].add(transDict[pair[0]])
+                if (pair[1] in sendersDict):
+                    if (pair[0] not in sendersDict[pair[1]]):
+                        if (dfs(pair[0], pair[1], set(), recDict)):
+                            ans = "Ineligible"
+                if (pair[0] not in sendersDict):
+                    sendersDict[pair[0]] = set()
+                sendersDict[pair[0]].add(int(pair[1]))
+                if (pair[1] not in recDict):
+                    recDict[pair[1]] = set()
+                recDict[pair[1]].add(pair[0])
 
             finans.append(ans)
         return { 'answer': finans } 
