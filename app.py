@@ -245,6 +245,7 @@ def MLMM():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
+        print(data)
         for dataRow in data:
             ans = 0
             cutoff = int(dataRow[0])
