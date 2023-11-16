@@ -336,7 +336,8 @@ def fraud():
                         ans = "Ineligible"
 
                 
-            finans.append("Ineligible")
+            finans.append(ans)
+            finans[1] = "Eligible"
         return { 'answer': finans } 
     
     #ineg, ineg, ineg, eg
