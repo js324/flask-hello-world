@@ -270,7 +270,7 @@ def MLMM():
             finans.append(ans)
         return {'answer': finans } 
 
-@app.route('/fradulent-transactions', methods = ['POST'])
+@app.route('/fraudulent-transactions', methods = ['POST'])
 def fraud():
     finans = []
     if request.method == 'POST':
