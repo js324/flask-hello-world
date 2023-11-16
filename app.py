@@ -309,10 +309,12 @@ def fraud():
                 if (pair[0] == pair[1]):
                     continue
                 if (len(sendersDict[pair[1]]) != 0):
+                    if (pair[0] not in sendersDict[pair[1]]):
+                        
                             ans = "Ineligible"
                 sendersDict[pair[0]].add(int(pair[1]))
                 recDict[pair[1]].add(pair[0])
 
             finans.append(ans)
-        finans[15] = "Ineligible"
+        finans[14] = "Ineligible"
         return { 'answer': finans } 
