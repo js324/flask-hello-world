@@ -278,26 +278,29 @@ def fraud():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
+        print(data)
+        #BIPARTITE?
         for dataRow in data:
+            firstRow = dataRow[0].split()
+            clients = int(firstRow[0])
+            numTrans = int(firstRow[1])
             transfers = dataRow[1:]
+
             def dfs(node, target, visited, graph):
                 visited.add(node)
                 ans = False
-                for child in graph[node[0]]:
-                    if (child[0] == target[0] and child[1] <= node[1]):
+                for child in graph[node]:
+                    if (child == target):
+                        print(child)
                         return True
-                    if (child not in visited and child[1] < node[1]):
+                    if (child not in visited and child[1]):
                         ans |= dfs(child, target, visited, graph)
                 return ans
             ans = "Eligible"
             # ["0 5", "6 4", "6 2", "2 0", "4 1", "5 3", "2 1", "3 2"] ELIG
-            # 0-1 1
-            # 1-2 2
-            # 2-0 3  (2,3) (0, 3)
-            #  (0,1) (0,3)
-            #  
-
-
+            # 0-5
+            # 6-4 6-2
+            # 2-0
             # 4-1
             # 5-3
             # 2-1
@@ -308,27 +311,32 @@ def fraud():
                 # must check if sender was fraud
                     # check if receiver was a sender, check if sender was PREVIOUS receiver of CURR receiver
                         # specifically check if curr sender RECEIVED curr receiver from someone else
-            sendersDict = dict()
-            recDict = dict()
-            time = 0
-            for i in range(0, 2002):
-                sendersDict[i] = set()
-                recDict[i] = set()
+            graph = dict()
+            for i in range(0, clients):
+                graph[i] = set()
             for pair in transfers:
                 pair = [int(e) for e in pair.split()]
-                time += 1
-                if (pair[0] == pair[1]):
-                    continue
-                if (len(sendersDict[pair[1]]) != 0):
-                    found = False
-                    for tup in sendersDict[pair[1]]:
-                        if tup[0] == pair[0]:
-                            found = True
-                    if (not found and dfs((pair[0], time), (pair[1], time), set(), recDict)):
-                        print("INEG")
+                graph[pair[0]].add(pair[1])
+                graph[pair[1]].add(pair[0])
+            q = []
+            colors = [-1]*clients
+            visited = set()
+            firstRow = [int(e) for e in transfers[0].split()]
+            q.append(firstRow[0])
+            colors[firstRow[0]] = 1
+            visited.add(firstRow[0])
+            while q:
+                pair = q.pop()
+                for child in graph[pair]:
+                    if (child not in visited and colors[child] == -1):
+                        visited.add(child)
+                        colors[child] = not colors[pair]
+                        q.append(child)
+                    elif colors[child] == colors[pair]:
                         ans = "Ineligible"
-                sendersDict[pair[0]].add((pair[1], time))
-                recDict[pair[1]].add((pair[0], time))
+
                 
             finans.append(ans)
         return { 'answer': finans } 
+    
+    #ineg, ineg, ineg, eg
