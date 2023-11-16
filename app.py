@@ -309,8 +309,6 @@ def fraud():
                 if (pair[0] == pair[1]):
                     continue
                 if (len(sendersDict[pair[1]]) != 0):
-                    if (pair[0] not in sendersDict[pair[1]]):
-                        if (dfs(pair[0], pair[1], set(), recDict)):
                             ans = "Ineligible"
                 sendersDict[pair[0]].add(int(pair[1]))
                 recDict[pair[1]].add(pair[0])
