@@ -300,6 +300,9 @@ def fraud():
                         # specifically check if curr sender RECEIVED curr receiver from someone else
             sendersDict = dict()
             recDict = dict()
+            for i in range(0, 2002):
+                sendersDict[i] = set()
+                recDict[i] = set()
             for pair in transfers:
                 pair = [int(e) for e in pair.split()]
                 
