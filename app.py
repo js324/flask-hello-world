@@ -239,3 +239,27 @@ def profMax():
                 globalMax = max(globalMax, localMax-localMin)
             finans.append(globalMax)
     return { 'answer': finans }
+
+@app.route('/mlmm-program', methods = ['POST'])
+def MLMM():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            ans = 0
+            cutoff = int(dataRow[0])
+            works = [int(e) for e in dataRow[2].split()]
+            
+            works = list(set(works))
+            works = sorted(works)
+            def helper(cutoff, sum, start):
+                ans = 0
+                for ind in range(start, len(works)):
+                    if (works[ind]+sum < cutoff):
+                        ans += 1
+                        print(works[ind]+sum)
+                        ans += helper(cutoff, sum+works[ind], ind+1)
+                return ans
+            ans = helper(cutoff, 0, 0)
+            finans.append(ans)
+        return {'answer': finans } 
