@@ -249,35 +249,25 @@ def MLMM():
             ans = 0
             cutoff = int(dataRow[0])
             works = [int(e) for e in dataRow[2].split()]
-            tupleSet = set()
+            if (len(works) == 0):
+                finans.append(0)
+                continue
             l = 0 
             r = 0
-            sum = 0
+            sum = works[l]
             while (r < len(works)):
-                sum += works[r]
-                if (sum < cutoff):
-                    if (not (l,r) in tupleSet):
-                            tupleSet.add((l,r))                    
+                if (sum < cutoff):              
                     r += 1
-                elif (l < r):
-                    while (l < r and sum >= cutoff):
-                        sum -= works[l]
-                        l += 1
-                        if (sum < cutoff):
-                            if (not (l,r) in tupleSet):
-                                tupleSet.add((l,r))  
+                    if r > l:
+                        ans += r-l
+                    if (r < len(works)):
+                        sum += works[r]
                 else:
-                    r += 1
-                    l = r
-                    sum = 0
-                       
-            while (l < r):
-                sum -= works[l]
-                l += 1
-                if (l < len(works) and sum < cutoff):
-                    if (not (l,r) in tupleSet):
-                        tupleSet.add((l,r))  
-            finans.append(len(tupleSet))
+                    sum -= works[l]
+                    l += 1
+                #10 5 2 6 
+                #l = 2 r = 4 ans = 6 sum = 13
+            finans.append(ans)
         return {'answer': finans } 
 
 @app.route('/fradulent-transactions', methods = ['POST'])
