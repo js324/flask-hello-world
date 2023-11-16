@@ -278,14 +278,12 @@ def fraud():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
-        print(data)
         for dataRow in data:
             transfers = dataRow[1:]
             def dfs(node, target, visited, graph):
                 visited.add(node)
                 ans = False
                 for child in graph[node[0]]:
-                    print(child, target)
                     if (child[0] == target[0] and child[1] <= node[1]):
                         return True
                     if (child not in visited and child[1] < node[1]):
