@@ -259,7 +259,10 @@ def MLMM():
                         ans += 1
                         print(works[ind]+sum)
                         ans += helper(cutoff, sum+works[ind], ind+1)
+                    else:
+                        return ans
                 return ans
             ans = helper(cutoff, 0, 0)
             finans.append(ans)
         return {'answer': finans } 
+    
