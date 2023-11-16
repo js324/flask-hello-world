@@ -75,7 +75,7 @@ def fileReorg():
         data = request.json['inputs']
         for word in data:
             occs = Counter(word)
-            print(occs)
+          
             largestOdd = 0
             total = 0
             for num in occs:
@@ -245,7 +245,6 @@ def MLMM():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
-        print(data)
         for dataRow in data:
             ans = 0
             cutoff = int(dataRow[0])
@@ -286,6 +285,7 @@ def fraud():
     finans = []
     if request.method == 'POST':
         data = request.json['inputs']
+        print(data)
         for dataRow in data:
             transfers = dataRow[1:]
             def dfs(node, target, visited, graph):
@@ -309,7 +309,7 @@ def fraud():
             recDict = dict()
             for pair in transfers:
                 pair = [int(e) for e in pair.split()]
-                print(pair)
+                
                 if (pair[0] == pair[1]):
                     continue
                 if (pair[1] in sendersDict):
