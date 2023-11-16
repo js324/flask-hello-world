@@ -219,4 +219,23 @@ def riskMit():
             finans.append(dp[numStrats][len(costs)-1])
                     
         return { 'answer': finans }
-            
+
+@app.route('/profit-maximization', methods = ['POST'])
+def profMax():
+    finans = []
+    if request.method == 'POST':
+        data = request.json['inputs']
+        for dataRow in data:
+            prices = [int(e) for e in dataRow.split()]
+            prices = prices[1:]
+            localMax = 0
+            localMin = 1000000000000000000000000000000000000000000
+            globalMax = 0
+            for ind, val in enumerate(prices):
+                if (val < localMin):
+                    localMin = val
+                    localMax = 0
+                localMax = max(localMax, val)
+                globalMax = max(globalMax, localMax-localMin)
+            finans.append(globalMax)
+    return { 'answer': finans }
